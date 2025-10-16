@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Pour lancer, utilisé sh compile.sh ou bash compile.sh ou ./compile.sh (nécessite autorisation (chmod))
+# Pour lancer, utiliser sh compile.sh ou bash compile.sh ou ./compile.sh (nécessite autorisation (chmod))
 
 mkdir -p build
 
