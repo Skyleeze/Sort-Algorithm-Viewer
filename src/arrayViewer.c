@@ -1,29 +1,41 @@
 #include "../include/application.h"
 #include "../include/insertionSort.h"
 #include "../include/quickSort.h"
+#include "../include/button.h"
+
 
 
 #include <SDL3/SDL.h>
 #include "time.h"
-#include <SDL3/SDL_log.h>
+#include <SDL3/SDL_render.h>
 #include <stdbool.h>
 #include <stdlib.h>
 
 int WIDTH = 1280;
 int HEIGH = 720;
 
-int renderDelay = 1;
+int renderDelay = 12; // Put enough delay to not have rendering problem
 
 SDL_Texture* texture;
 SDL_Texture* clearTexture;
 
 SDL_FRect** rects;
 
-int* liste;
+Button** pButtons;
+int nbButtons = 3;
 
+
+int* liste;
 
 int nbElem;
 App* pApp;
+
+int state = 2;
+/* 
+0 : Menu
+1 : Insertion Sort
+2 : Quick Sort
+*/
 
 
 Uint32 createColour(Uint8 r, Uint8 g, Uint8 b, Uint8 a) {
@@ -82,6 +94,27 @@ void clearVerticalLine(int* x) {
     
 }
 
+
+
+void renderArray() {
+    SDL_SetRenderDrawColor(pApp->pRenderer, 0, 0, 0, 255);
+    SDL_RenderClear(pApp->pRenderer);
+    showArray();
+    SDL_RenderPresent(pApp->pRenderer);
+    SDL_Delay(renderDelay);
+}
+
+void initButtons() {
+    pButtons = malloc(sizeof(Button)*3);
+    char* buttonsLabel[] = {"Insertion Sort", "Quick Sort", "Quit"};
+    for (int i = 0; i<nbButtons;i++) {
+        Button*pButton = malloc(sizeof(Button));
+        pButton->name = buttonsLabel[i];
+        pButtons[i] = pButton;
+    }  
+}
+
+
 void renderQuickSort(int* a, int* b, bool show) {
     int iA = (int)(a-liste);
     int iB = (int)(b-liste);
@@ -101,46 +134,98 @@ void renderQuickSort(int* a, int* b, bool show) {
     SDL_RenderTexture(pApp->pRenderer, texture,NULL,rects[iB]);
 
     if (show) {
+        
         SDL_RenderPresent(pApp->pRenderer);
         SDL_Delay(renderDelay);
     }
 
 }
 
-void renderArray() {
-    SDL_SetRenderDrawColor(pApp->pRenderer, 0, 0, 0, 255);
-    SDL_RenderClear(pApp->pRenderer);
-    showArray();
-    SDL_RenderPresent(pApp->pRenderer);
-    SDL_Delay(renderDelay);
-}
-
-
 void start() {
-    renderArray();
-    quickSort(liste, nbElem, renderQuickSort); 
-    //triInsertion(liste, nbElem, renderArray);
-}
-
-
-
-int main() {
-    pApp = createApp("ArrayViewer", WIDTH, HEIGH);
     texture = NULL;
     clearTexture = NULL;
     srand(time(NULL));
 
     nbElem = WIDTH;
 
-
-    initRects();
-    
+    initRects(); 
 
     liste = genRandomIntArray(nbElem);
     texture = initTexture(pApp->pRenderer, createColour(155,0,155,255));
     clearTexture = initTexture(pApp->pRenderer, createColour(0, 0, 0, 255));
 
-    runApp(pApp,start,NULL, NULL);
+    initButtons();
+
+    //renderArray();
+    //quickSort(liste, nbElem, renderQuickSort); 
+    //triInsertion(liste, nbElem, renderArray);
+}
+
+void updateMenu() {
+
+}
+
+void updateInsertion() {
+    renderArray();
+    triInsertion(liste, nbElem, renderArray);
+    pApp->running = false;
+}
+
+void updateQuickSort() {
+    renderArray();
+    quickSort(liste, nbElem, renderQuickSort); 
+    pApp->running = false;
+
+}
+
+
+void update() {
+    switch (state) {
+        case 0:
+            updateMenu();
+        break;
+        case 1:
+            updateInsertion();
+        break;
+        case 2:
+            updateQuickSort();
+        break;
+    }
+    
+}
+
+
+void renderMenu() {
+    SDL_SetRenderDrawColor(pApp->pRenderer, 0, 0, 0, 255);
+    SDL_RenderClear(pApp->pRenderer);
+    for (int i = 0; i<nbButtons;i++) {
+        drawButton(pApp->pRenderer,pButtons[i], WIDTH/2,HEIGH/nbButtons, WIDTH/8, HEIGH/8);
+
+    }
+    SDL_RenderPresent(pApp->pRenderer);
+
+}
+
+void renderInsertion() {
+}
+
+void render() {
+    switch (state) {
+        case 0:
+            renderMenu();
+        break;
+        case 1:
+        break;
+        case 2:
+        break;
+    }
+    
+}
+int main() {
+    pApp = createApp("ArrayViewer", WIDTH, HEIGH);
+
+
+    runApp(pApp,start,update,render);
     
     SDL_DestroyTexture(texture);
     SDL_DestroyTexture(clearTexture);

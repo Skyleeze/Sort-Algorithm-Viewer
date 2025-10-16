@@ -86,6 +86,7 @@ void processKeyUp(App* pApplication, SDL_KeyboardEvent key) {
 
 }
 
+
 void processAppEvent(App* pApp) {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
@@ -150,5 +151,3 @@ void runApp(App* pApp, void (*start)(), void (*update)(), void (*render)()) {
         updateApp(pApp, update, render);
     }
 }
-
-
