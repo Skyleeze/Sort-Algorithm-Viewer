@@ -12,7 +12,7 @@ typedef struct {
 Button* createButton (char* name);
 void drawButton(SDL_Renderer* pRenderer, Button* pButton ,int x, int y, int w, int h ) ;
 
-bool buttonPressed () ;
+bool buttonPressed (Button* pButton); 
 
 
 

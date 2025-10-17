@@ -7,6 +7,7 @@ typedef struct {
     SDL_Window *pWindow;
     SDL_Renderer *pRenderer;
     bool running;
+    bool mousePressed;
 } App ;
 
 App* createApp(char* title, int w, int h);

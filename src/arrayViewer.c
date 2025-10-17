@@ -30,7 +30,7 @@ int* liste;
 int nbElem;
 App* pApp;
 
-int state = 2;
+int state = 0;
 /* 
 0 : Menu
 1 : Insertion Sort
@@ -162,7 +162,12 @@ void start() {
 }
 
 void updateMenu() {
-
+    for (int i = 0; i<nbButtons; i++) {
+        if (pApp->mousePressed && buttonPressed(pButtons[i])) {
+            if (i==nbButtons-1) {pApp->running = false;}
+            else {state=i+1;}
+        }
+    }
 }
 
 void updateInsertion() {
@@ -199,7 +204,7 @@ void renderMenu() {
     SDL_SetRenderDrawColor(pApp->pRenderer, 0, 0, 0, 255);
     SDL_RenderClear(pApp->pRenderer);
     for (int i = 0; i<nbButtons;i++) {
-        drawButton(pApp->pRenderer,pButtons[i], WIDTH/2,HEIGH/nbButtons, WIDTH/8, HEIGH/8);
+        drawButton(pApp->pRenderer,pButtons[i], WIDTH/2,i*HEIGH/nbButtons, WIDTH/8, HEIGH/8);
 
     }
     SDL_RenderPresent(pApp->pRenderer);

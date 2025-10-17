@@ -1,3 +1,4 @@
+#include <SDL3/SDL_events.h>
 #include <stdbool.h>
 
 
@@ -8,6 +9,7 @@ typedef struct {
     SDL_Window *pWindow;
     SDL_Renderer *pRenderer;
     bool running;
+    bool mousePressed;
 } App ;
 
 App* createApp(char* title, int w, int h) {
@@ -101,6 +103,14 @@ void processAppEvent(App* pApp) {
             
             case SDL_EVENT_KEY_UP:
                 processKeyUp(pApp,  event.key);
+            break;
+
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
+                pApp->mousePressed = true;
+            break;
+
+            case SDL_EVENT_MOUSE_BUTTON_UP:
+                pApp->mousePressed = false;
             break;
         }
     }
